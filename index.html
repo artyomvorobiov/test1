@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-<title>GLIMPSE — найди оттенок, пока он не исчез</title>
-<meta name="description" content="Ежедневная игра на реакцию и зрение: найди плитку другого оттенка, пока время не вышло. Делись результатом, как в Wordle.">
+<title>GLIMPSE — three daily micro-games</title>
+<meta name="description" content="Three tiny daily browser games: spot the odd shade, time a closing ring, memorize a growing pattern. New challenge every day, shareable results.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%237c5cff%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%2300e6a8%22/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,15 +16,19 @@
 <div class="bg-glow" aria-hidden="true"></div>
 
 <header class="topbar">
-  <div class="brand">
+  <button class="brand" id="brandHomeBtn" title="All games">
     <span class="brand-dot"></span>
     <span class="brand-name">GLIMPSE</span>
-  </div>
+  </button>
   <div class="topbar-actions">
-    <button class="icon-btn" id="statsBtn" title="Статистика" aria-label="Статистика">
+    <div class="lang-switch" id="langSwitch">
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ru">RU</button>
+    </div>
+    <button class="icon-btn" id="statsBtn" title="Stats" data-i18n-title="nav.stats" aria-label="Stats">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M5 20h2v-8H5v8Zm6 0h2V4h-2v16Zm6 0h2v-12h-2v12Z"/></svg>
     </button>
-    <button class="icon-btn" id="howBtn" title="Как играть" aria-label="Как играть">
+    <button class="icon-btn" id="howBtn" title="How to play" data-i18n-title="nav.how" aria-label="How to play">
       <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm.75 15h-1.5v-1.5h1.5Zm1.53-6.11c-.63.63-1.03 1.01-1.03 2.11h-1.5v-.5c0-.9.4-1.5 1.03-2.13.5-.5.97-.94.97-1.62A1.75 1.75 0 0 0 12 7a1.75 1.75 0 0 0-1.75 1.75H9A3.25 3.25 0 0 1 12 5.5a3.25 3.25 0 0 1 2.28 5.39Z"/></svg>
     </button>
   </div>
@@ -32,60 +36,190 @@
 
 <main class="stage">
 
-  <!-- INTRO -->
-  <section class="screen intro-screen" id="screen-intro">
+  <!-- ============ HUB ============ -->
+  <section class="screen hub-screen" id="screen-hub">
+    <div class="hub-head">
+      <p class="eyebrow" data-i18n="hub.eyebrow">Daily micro-games</p>
+      <h1 class="title"><span data-i18n="hub.title1">Ten seconds to learn.</span><br><span class="grad-text" data-i18n="hub.title2">A lifetime to master.</span></h1>
+      <p class="subtitle" data-i18n="hub.subtitle">Three tiny games, one new challenge a day.</p>
+    </div>
+
+    <div class="game-cards">
+      <article class="game-card" data-game="shade">
+        <div class="card-icon icon-shade"><span></span><span></span><span></span><span></span></div>
+        <h3 data-i18n="shade.card.title">SHADE</h3>
+        <p data-i18n="shade.card.tag">Spot the odd shade before it fades.</p>
+        <button class="btn btn-primary card-play-btn" data-game="shade"><span data-i18n="hub.play">Play</span></button>
+      </article>
+
+      <article class="game-card" data-game="pulse">
+        <div class="card-icon icon-pulse"><span class="ring-a"></span><span class="ring-b"></span></div>
+        <h3 data-i18n="pulse.card.title">PULSE</h3>
+        <p data-i18n="pulse.card.tag">Stop the ring at the perfect moment.</p>
+        <button class="btn btn-primary card-play-btn" data-game="pulse"><span data-i18n="hub.play">Play</span></button>
+      </article>
+
+      <article class="game-card" data-game="chain">
+        <div class="card-icon icon-chain">
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+          <span></span><span></span><span></span>
+        </div>
+        <h3 data-i18n="chain.card.title">CHAIN</h3>
+        <p data-i18n="chain.card.tag">Repeat the pattern. How far can you go?</p>
+        <button class="btn btn-primary card-play-btn" data-game="chain"><span data-i18n="hub.play">Play</span></button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ SHADE ============ -->
+  <section class="screen intro-screen hidden" id="screen-shade-intro">
     <div class="glass-card intro-card">
-      <p class="eyebrow">Ежедневная игра на реакцию</p>
-      <h1 class="title">Найди оттенок,<br><span class="grad-text">пока он не исчез</span></h1>
-      <p class="subtitle">Одна плитка чуть-чуть отличается по цвету. С каждым раундом её всё сложнее заметить, а времени всё меньше. 5 раундов в день — один результат для всех.</p>
-
-      <div class="puzzle-id" id="puzzleId">GLIMPSE #0</div>
-
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" data-i18n="shade.intro.eyebrow">Daily perception game</p>
+      <h1 class="title"><span data-i18n="shade.intro.title1">Find the shade,</span><br><span class="grad-text" data-i18n="shade.intro.title2">before it fades</span></h1>
+      <p class="subtitle" data-i18n="shade.intro.subtitle">One tile is a slightly different shade.</p>
+      <div class="puzzle-id" id="shadePuzzleId">SHADE #0</div>
       <div class="cta-row">
-        <button class="btn btn-primary" id="playDailyBtn">Играть — Daily</button>
-        <button class="btn btn-ghost" id="playPracticeBtn">Тренировка</button>
+        <button class="btn btn-primary" id="shadePlayDailyBtn" data-i18n="shade.intro.playDaily">Play — Daily</button>
+        <button class="btn btn-ghost" id="shadePlayPracticeBtn" data-i18n="shade.intro.practice">Practice</button>
       </div>
-
-      <div class="streak-badges" id="streakBadges"></div>
+      <div class="diff-select">
+        <p class="diff-label" data-i18n="shade.intro.difficulty">Practice difficulty</p>
+        <div class="pill-row" id="shadeDifficultyRow">
+          <button class="pill" data-diff="casual" data-i18n="shade.diff.casual">Casual</button>
+          <button class="pill" data-diff="standard" data-i18n="shade.diff.standard">Standard</button>
+          <button class="pill" data-diff="hard" data-i18n="shade.diff.hard">Hard</button>
+          <button class="pill" data-diff="insane" data-i18n="shade.diff.insane">Insane</button>
+        </div>
+      </div>
+      <div class="streak-badges" id="shadeStreakBadges"></div>
     </div>
   </section>
 
-  <!-- GAME -->
-  <section class="screen game-screen hidden" id="screen-game">
+  <section class="screen game-screen hidden" id="screen-shade-game">
     <div class="game-hud">
-      <div class="round-pips" id="roundPips"></div>
-      <div class="round-label" id="roundLabel">Раунд 1 / 5</div>
+      <div class="round-pips" id="shadeRoundPips"></div>
+      <div class="round-label" id="shadeRoundLabel">Round 1 / 6</div>
     </div>
-
-    <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
-
-    <p class="hint-text" id="hintText">Кликни по плитке другого оттенка</p>
-
+    <div class="timer-track"><div class="timer-fill" id="shadeTimerFill"></div></div>
+    <p class="hint-text" id="shadeHintText" data-i18n="shade.game.hint">Click the tile with the different shade</p>
     <div class="grid-wrap">
-      <div class="tile-grid" id="tileGrid"></div>
-      <div class="round-flash" id="roundFlash"></div>
+      <div class="tile-grid" id="shadeTileGrid"></div>
+      <div class="round-flash" id="shadeRoundFlash"></div>
     </div>
   </section>
 
-  <!-- RESULT -->
-  <section class="screen result-screen hidden" id="screen-result">
+  <section class="screen result-screen hidden" id="screen-shade-result">
     <div class="glass-card result-card">
-      <p class="eyebrow" id="resultEyebrow">Результат</p>
-      <h2 class="result-title" id="resultTitle">4 / 5</h2>
-
-      <div class="emoji-strip" id="emojiStrip"></div>
-
-      <div class="stats-row" id="statsRow"></div>
-
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" id="shadeResultEyebrow">Result</p>
+      <h2 class="result-title" id="shadeResultTitle">4 / 6</h2>
+      <div class="emoji-strip" id="shadeEmojiStrip"></div>
+      <div class="stats-row" id="shadeStatsRow"></div>
       <div class="cta-row">
-        <button class="btn btn-primary" id="shareBtn">
+        <button class="btn btn-primary" id="shadeShareBtn">
           <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M18 16.08a2.92 2.92 0 0 0-1.95.76L8.91 12.7a3 3 0 0 0 0-1.4l7.05-4.11a3 3 0 1 0-.9-1.72L8 9.58a3 3 0 1 0 0 4.84l7.11 4.14a3 3 0 1 0 2.89-2.48Z"/></svg>
-          Скопировать результат
+          <span data-i18n="common.share">Copy result</span>
         </button>
-        <button class="btn btn-ghost" id="againBtn">Ещё раз (тренировка)</button>
+        <button class="btn btn-ghost" id="shadeAgainBtn">Play again</button>
       </div>
+      <div class="next-daily" id="shadeNextDaily"></div>
+    </div>
+  </section>
 
-      <div class="next-daily" id="nextDaily"></div>
+  <!-- ============ PULSE ============ -->
+  <section class="screen intro-screen hidden" id="screen-pulse-intro">
+    <div class="glass-card intro-card">
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" data-i18n="pulse.intro.eyebrow">Daily timing game</p>
+      <h1 class="title"><span data-i18n="pulse.intro.title1">Stop the ring,</span><br><span class="grad-text" data-i18n="pulse.intro.title2">right on the mark</span></h1>
+      <p class="subtitle" data-i18n="pulse.intro.subtitle">A ring closes in on a hidden target.</p>
+      <div class="puzzle-id" id="pulsePuzzleId">PULSE #0</div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="pulsePlayDailyBtn" data-i18n="pulse.intro.playDaily">Play — Daily</button>
+        <button class="btn btn-ghost" id="pulsePlayPracticeBtn" data-i18n="pulse.intro.practice">Practice</button>
+      </div>
+      <div class="streak-badges" id="pulseStreakBadges"></div>
+    </div>
+  </section>
+
+  <section class="screen game-screen hidden" id="screen-pulse-game">
+    <div class="game-hud">
+      <div class="round-pips" id="pulseRoundPips"></div>
+      <div class="round-label" id="pulseRoundLabel">Round 1 / 6</div>
+    </div>
+    <p class="hint-text" data-i18n="pulse.game.hint">Tap when the closing ring matches the target ring</p>
+    <div class="ring-stage-wrap">
+      <div class="ring-stage" id="pulseStage">
+        <div class="ring ring-target" id="pulseTargetRing"></div>
+        <div class="ring ring-outer" id="pulseOuterRing"></div>
+        <div class="ring-center-dot"></div>
+        <div class="round-flash" id="pulseRoundFlash"></div>
+      </div>
+      <p class="tap-hint" data-i18n="pulse.game.tapHint">TAP</p>
+    </div>
+  </section>
+
+  <section class="screen result-screen hidden" id="screen-pulse-result">
+    <div class="glass-card result-card">
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" id="pulseResultEyebrow">Result</p>
+      <h2 class="result-title" id="pulseResultTitle">4 / 6</h2>
+      <div class="emoji-strip" id="pulseEmojiStrip"></div>
+      <div class="stats-row" id="pulseStatsRow"></div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="pulseShareBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M18 16.08a2.92 2.92 0 0 0-1.95.76L8.91 12.7a3 3 0 0 0 0-1.4l7.05-4.11a3 3 0 1 0-.9-1.72L8 9.58a3 3 0 1 0 0 4.84l7.11 4.14a3 3 0 1 0 2.89-2.48Z"/></svg>
+          <span data-i18n="common.share">Copy result</span>
+        </button>
+        <button class="btn btn-ghost" id="pulseAgainBtn">Play again</button>
+      </div>
+      <div class="next-daily" id="pulseNextDaily"></div>
+    </div>
+  </section>
+
+  <!-- ============ CHAIN ============ -->
+  <section class="screen intro-screen hidden" id="screen-chain-intro">
+    <div class="glass-card intro-card">
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" data-i18n="chain.intro.eyebrow">Daily memory game</p>
+      <h1 class="title"><span data-i18n="chain.intro.title1">Watch the pattern,</span><br><span class="grad-text" data-i18n="chain.intro.title2">repeat it back</span></h1>
+      <p class="subtitle" data-i18n="chain.intro.subtitle">Each level adds one more step to the sequence.</p>
+      <div class="puzzle-id" id="chainPuzzleId">CHAIN #0</div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="chainPlayDailyBtn" data-i18n="chain.intro.playDaily">Play — Daily</button>
+        <button class="btn btn-ghost" id="chainPlayPracticeBtn" data-i18n="chain.intro.practice">Practice</button>
+      </div>
+      <div class="streak-badges" id="chainStreakBadges"></div>
+    </div>
+  </section>
+
+  <section class="screen game-screen hidden" id="screen-chain-game">
+    <div class="game-hud">
+      <div class="round-label" id="chainLevelLabel">Level 1</div>
+      <div class="round-label" id="chainStatusLabel">Watch…</div>
+    </div>
+    <div class="grid-wrap">
+      <div class="chain-grid" id="chainGrid"></div>
+    </div>
+  </section>
+
+  <section class="screen result-screen hidden" id="screen-chain-result">
+    <div class="glass-card result-card">
+      <button class="back-link" data-back>← <span data-i18n="common.backHome">All games</span></button>
+      <p class="eyebrow" id="chainResultEyebrow">Result</p>
+      <h2 class="result-title" id="chainResultTitle">7 / 10</h2>
+      <div class="emoji-strip" id="chainEmojiStrip"></div>
+      <div class="stats-row" id="chainStatsRow"></div>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="chainShareBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M18 16.08a2.92 2.92 0 0 0-1.95.76L8.91 12.7a3 3 0 0 0 0-1.4l7.05-4.11a3 3 0 1 0-.9-1.72L8 9.58a3 3 0 1 0 0 4.84l7.11 4.14a3 3 0 1 0 2.89-2.48Z"/></svg>
+          <span data-i18n="common.share">Copy result</span>
+        </button>
+        <button class="btn btn-ghost" id="chainAgainBtn">Play again</button>
+      </div>
+      <div class="next-daily" id="chainNextDaily"></div>
     </div>
   </section>
 
@@ -94,38 +228,33 @@
 <!-- HOW TO PLAY MODAL -->
 <div class="modal-overlay hidden" id="howOverlay">
   <div class="modal glass-card">
-    <button class="modal-close" id="howClose" aria-label="Закрыть">✕</button>
-    <h2>Как играть в GLIMPSE</h2>
-    <ol class="rules-list">
-      <li>На поле — плитки почти одного цвета. Одна из них отличается по оттенку.</li>
-      <li>Найди и кликни её до того, как истечёт время раунда.</li>
-      <li>Всего 5 раундов в день. С каждым раундом плитки мельче, разница в цвете тоньше, а времени меньше.</li>
-      <li>🟩 — угадал быстро, 🟨 — угадал на исходе времени, 🟥 — не успел или ошибся.</li>
-      <li>Раз в день у всех одна и та же задача — сравнивай результат с друзьями и стримерами.</li>
-    </ol>
-    <button class="btn btn-primary" id="howGotIt">Понятно, играть!</button>
+    <button class="modal-close" id="howClose" aria-label="Close">✕</button>
+    <h2 id="howTitle" data-i18n="modal.howTitle">How to play</h2>
+    <ol class="rules-list" id="howRulesList"></ol>
+    <button class="btn btn-primary" id="howGotIt" data-i18n="modal.gotIt">Got it, let's play!</button>
   </div>
 </div>
 
 <!-- STATS MODAL -->
 <div class="modal-overlay hidden" id="statsOverlay">
   <div class="modal glass-card">
-    <button class="modal-close" id="statsClose" aria-label="Закрыть">✕</button>
-    <h2>Статистика</h2>
-    <div class="stats-grid" id="statsGrid"></div>
-    <div class="dist-wrap">
-      <p class="dist-title">Результаты (раунды из 5)</p>
-      <div class="dist-bars" id="distBars"></div>
+    <button class="modal-close" id="statsClose" aria-label="Close">✕</button>
+    <h2 data-i18n="modal.statsTitle">Statistics</h2>
+    <div class="pill-row" id="statsTabs">
+      <button class="pill" data-tab="shade">SHADE</button>
+      <button class="pill" data-tab="pulse">PULSE</button>
+      <button class="pill" data-tab="chain">CHAIN</button>
     </div>
+    <div id="statsContent"></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <footer class="foot">
-  <span>GLIMPSE · новая игра каждый день в 00:00 UTC</span>
+  <span data-i18n="footer.text">GLIMPSE · a new challenge every day at 00:00 UTC</span>
 </footer>
 
-<script src="game.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>
