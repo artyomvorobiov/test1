@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>GLIMPSE — найди оттенок, пока он не исчез</title>
+<meta name="description" content="Ежедневная игра на реакцию и зрение: найди плитку другого оттенка, пока время не вышло. Делись результатом, как в Wordle.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%237c5cff%22/><circle cx=%2250%22 cy=%2250%22 r=%2222%22 fill=%22%2300e6a8%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    <span class="brand-name">GLIMPSE</span>
+  </div>
+  <div class="topbar-actions">
+    <button class="icon-btn" id="statsBtn" title="Статистика" aria-label="Статистика">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M5 20h2v-8H5v8Zm6 0h2V4h-2v16Zm6 0h2v-12h-2v12Z"/></svg>
+    </button>
+    <button class="icon-btn" id="howBtn" title="Как играть" aria-label="Как играть">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm.75 15h-1.5v-1.5h1.5Zm1.53-6.11c-.63.63-1.03 1.01-1.03 2.11h-1.5v-.5c0-.9.4-1.5 1.03-2.13.5-.5.97-.94.97-1.62A1.75 1.75 0 0 0 12 7a1.75 1.75 0 0 0-1.75 1.75H9A3.25 3.25 0 0 1 12 5.5a3.25 3.25 0 0 1 2.28 5.39Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="stage">
+
+  <!-- INTRO -->
+  <section class="screen intro-screen" id="screen-intro">
+    <div class="glass-card intro-card">
+      <p class="eyebrow">Ежедневная игра на реакцию</p>
+      <h1 class="title">Найди оттенок,<br><span class="grad-text">пока он не исчез</span></h1>
+      <p class="subtitle">Одна плитка чуть-чуть отличается по цвету. С каждым раундом её всё сложнее заметить, а времени всё меньше. 5 раундов в день — один результат для всех.</p>
+
+      <div class="puzzle-id" id="puzzleId">GLIMPSE #0</div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="playDailyBtn">Играть — Daily</button>
+        <button class="btn btn-ghost" id="playPracticeBtn">Тренировка</button>
+      </div>
+
+      <div class="streak-badges" id="streakBadges"></div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen game-screen hidden" id="screen-game">
+    <div class="game-hud">
+      <div class="round-pips" id="roundPips"></div>
+      <div class="round-label" id="roundLabel">Раунд 1 / 5</div>
+    </div>
+
+    <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+
+    <p class="hint-text" id="hintText">Кликни по плитке другого оттенка</p>
+
+    <div class="grid-wrap">
+      <div class="tile-grid" id="tileGrid"></div>
+      <div class="round-flash" id="roundFlash"></div>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen result-screen hidden" id="screen-result">
+    <div class="glass-card result-card">
+      <p class="eyebrow" id="resultEyebrow">Результат</p>
+      <h2 class="result-title" id="resultTitle">4 / 5</h2>
+
+      <div class="emoji-strip" id="emojiStrip"></div>
+
+      <div class="stats-row" id="statsRow"></div>
+
+      <div class="cta-row">
+        <button class="btn btn-primary" id="shareBtn">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M18 16.08a2.92 2.92 0 0 0-1.95.76L8.91 12.7a3 3 0 0 0 0-1.4l7.05-4.11a3 3 0 1 0-.9-1.72L8 9.58a3 3 0 1 0 0 4.84l7.11 4.14a3 3 0 1 0 2.89-2.48Z"/></svg>
+          Скопировать результат
+        </button>
+        <button class="btn btn-ghost" id="againBtn">Ещё раз (тренировка)</button>
+      </div>
+
+      <div class="next-daily" id="nextDaily"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- HOW TO PLAY MODAL -->
+<div class="modal-overlay hidden" id="howOverlay">
+  <div class="modal glass-card">
+    <button class="modal-close" id="howClose" aria-label="Закрыть">✕</button>
+    <h2>Как играть в GLIMPSE</h2>
+    <ol class="rules-list">
+      <li>На поле — плитки почти одного цвета. Одна из них отличается по оттенку.</li>
+      <li>Найди и кликни её до того, как истечёт время раунда.</li>
+      <li>Всего 5 раундов в день. С каждым раундом плитки мельче, разница в цвете тоньше, а времени меньше.</li>
+      <li>🟩 — угадал быстро, 🟨 — угадал на исходе времени, 🟥 — не успел или ошибся.</li>
+      <li>Раз в день у всех одна и та же задача — сравнивай результат с друзьями и стримерами.</li>
+    </ol>
+    <button class="btn btn-primary" id="howGotIt">Понятно, играть!</button>
+  </div>
+</div>
+
+<!-- STATS MODAL -->
+<div class="modal-overlay hidden" id="statsOverlay">
+  <div class="modal glass-card">
+    <button class="modal-close" id="statsClose" aria-label="Закрыть">✕</button>
+    <h2>Статистика</h2>
+    <div class="stats-grid" id="statsGrid"></div>
+    <div class="dist-wrap">
+      <p class="dist-title">Результаты (раунды из 5)</p>
+      <div class="dist-bars" id="distBars"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer class="foot">
+  <span>GLIMPSE · новая игра каждый день в 00:00 UTC</span>
+</footer>
+
+<script src="game.js"></script>
+</body>
+</html>
